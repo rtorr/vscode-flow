@@ -27,19 +27,19 @@ export function setup(disposables) {
   }));
 }
 
-var environment = process.env;
-
-var config = {
+const environment = process.env;
+const config = {
   cwd: `${vscode.workspace.rootPath}`,
   maxBuffer: 10000 * 1024,
   env: environment
-}
+};
+const flowPath = vscode.workspace.getConfiguration('flow').get('path');
 
 function updateDiagnostics(document): void {
   let flowOutput = '';
   let flowOutputError = '';
   try {
-    const flow = spawn(`flow`, ['--json'], config)
+    const flow = spawn(`${flowPath}`, ['--json'], config)
     flow.stdout.on('data', function (data) {
       flowOutput += data.toString();
     })

@@ -6,6 +6,11 @@
  the root directory of this source tree.
  */
 
+/**
+ * TODO MAKE THIS WORK!
+ */
+
+
 import * as vscode from 'vscode';
 import { spawn } from 'child_process';
 
@@ -33,16 +38,16 @@ export class CompletionSupport {
     //   true
     // );
 
-    let completions = null;
-
-    var config = {
+    const environment = process.env;
+    const config = {
       cwd: `${vscode.workspace.rootPath}`,
       maxBuffer: 10000 * 1024,
-      env: process.env
-    }
+      env: environment
+    };
+    const flowPath = vscode.workspace.getConfiguration('flow').get('path');
 
     try {
-      const flow = spawn(`flow`, [
+      const flow = spawn(`${flowPath}`, [
         'autocomplete',
         '--strip-root',
         '--json',
@@ -72,21 +77,21 @@ export class CompletionSupport {
       vscode.window.showErrorMessage(error);
     }
 
-    if (completions) {
-      return completions.map(atomCompletion => {
-        const completion = new vscode.CompletionItem(atomCompletion.displayText);
-        if (atomCompletion.description) {
-          completion.detail = atomCompletion.description;
-        }
-        completion.kind = this.typeToKind(atomCompletion.type, atomCompletion.description);
+    // if (completions) {
+    //   return completions.map(atomCompletion => {
+    //     const completion = new vscode.CompletionItem(atomCompletion.displayText);
+    //     if (atomCompletion.description) {
+    //       completion.detail = atomCompletion.description;
+    //     }
+    //     completion.kind = this.typeToKind(atomCompletion.type, atomCompletion.description);
 
-        if (completion.kind === vscode.CompletionItemKind.Function) {
-          completion.insertText = atomCompletion.snippet.replace(/\${\d+:/g, '{{').replace(/}/g, '}}') + '{{}}';
-        }
+    //     if (completion.kind === vscode.CompletionItemKind.Function) {
+    //       completion.insertText = atomCompletion.snippet.replace(/\${\d+:/g, '{{').replace(/}/g, '}}') + '{{}}';
+    //     }
 
-        return completion;
-      });
-    }
+    //     return completion;
+    //   });
+    // }
 
     return [];
   }

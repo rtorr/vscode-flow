@@ -11,15 +11,21 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as config from './config';
-import { CompletionSupport } from './completion';
 import { DeclarationSupport } from './declaration';
 import { setup } from './diagnostics';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+    const flowPath = vscode.workspace.getConfiguration('flow').get('path');
+    if (vscode.workspace.getConfiguration('flow').get('disable')) {
+        return undefined;
+    }
+    if (!flowPath) {
+        vscode.window.showErrorMessage('Please add "flow.path": "path/to/flow" in your .vscode/settings.json file');
+        return undefined;
+    }
     config.configure();
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider('javascript', new CompletionSupport(), '.'));
     context.subscriptions.push(vscode.languages.registerDefinitionProvider('javascript', new DeclarationSupport()));
     // Diagnostics
     setup(context.subscriptions);

@@ -8,6 +8,7 @@ Follow the [instructions](https://code.visualstudio.com/docs/editor/extension-ga
 
 ## Setup
 
+* You _have_ to put `"flow.path": "/path/to/wher/you/put/flow"` in your `.vscode/settings.json` file
 * Flow is only supported on Mac and Linux, follow [flowtype.org](http://flowtype.org/docs/getting-started.html#_) to get started
 * You need a `.flowconfig` in your workspace to enable the flow features
 * Make sure you are able to run the `flow` command from the command line
@@ -19,6 +20,10 @@ Follow the [instructions](https://code.visualstudio.com/docs/editor/extension-ga
 * IntelliSense
 * Go to Definition / Peek Definition
 * Diagnostics (Errors, Warnings)
+
+## Disable
+
+You can disable `flow` per workspace by setting `"flow.disable": true` in your `.vscode/settings.json` file.
 
 ## Known Issues
 

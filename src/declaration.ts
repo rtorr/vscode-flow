@@ -21,15 +21,16 @@ export class DeclarationSupport {
     if (wordAtPosition) {
       const line = wordAtPosition.start.line + 1; // fix offsets
       const col = wordAtPosition.start.character + 1; // fix offsets
-
-      var config = {
+      const environment = process.env;
+      const config = {
         cwd: `${vscode.workspace.rootPath}`,
         maxBuffer: 10000 * 1024,
-        env: process.env
-      }
+        env: environment
+      };
+      const flowPath = vscode.workspace.getConfiguration('flow').get('path');
 
       try {
-        const flow = spawn(`flow`, [
+        const flow = spawn(`${flowPath}`, [
           'get-def',
           '--strip-root',
           '--json',
