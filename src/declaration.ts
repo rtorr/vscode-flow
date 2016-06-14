@@ -11,7 +11,7 @@ import { spawn } from 'child_process';
 
 export class DeclarationSupport {
 
-  async provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
+  provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
     const fileName = document.uri.fsPath;
     const currentContents = document.getText();
     let flowOutput = '';
@@ -49,8 +49,8 @@ export class DeclarationSupport {
           if (flowOutputError.length) {
             vscode.window.showInformationMessage(flowOutputError);
           }
-          const range = new vscode.Range(o.line, o.column, o.line, o.column);
-          const uri = vscode.Uri.file(o.file);
+          const range = new vscode.Range(o.line, o.start, o.line, o.end);
+          const uri = vscode.Uri.file(o.path);
           return new vscode.Location(uri, range);
         })
       } catch (error) {

@@ -15,7 +15,7 @@ export class CompletionSupport {
     this.triggerCharacters = ['.'];
   }
 
-  async provideCompletionItems(document, position, token) {
+  provideCompletionItems(document, position, token) {
     console.log('wat')
     let flowOutput = '';
     let flowOutputError = '';
@@ -43,11 +43,11 @@ export class CompletionSupport {
 
     try {
       const flow = spawn(`flow`, [
-        'autocomplete', 
-        '--strip-root', 
-        '--json', 
-        '--no-auto-start', 
-        fileName, 
+        'autocomplete',
+        '--strip-root',
+        '--json',
+        '--no-auto-start',
+        fileName,
         line, col], config)
       flow.stdout.on('data', function (data) {
         flowOutput += data.toString();
