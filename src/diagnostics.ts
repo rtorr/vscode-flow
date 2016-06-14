@@ -74,6 +74,15 @@ function mapSeverity(sev: string) {
 function clean(diagnostics) {
   let cleaned = {};
   let targetResource;
+  let desc = '';
+  let cords = {
+    path: '',
+    line: 0,
+    start: 0,
+    endline: 0,
+    end: 0
+  };
+  let i = 0;
   /**
    * TODO:
    * Currently we are getting duplicate errors listing here
@@ -82,14 +91,33 @@ function clean(diagnostics) {
    */
   let diags = diagnostics.map(e => {
     return e.message.map(m => {
-      if (m.line) {
-        if (cleaned[m.path] === undefined) {
-          cleaned[m.path] = [];
-        }
-        targetResource = vscode.Uri.file(m.path);
-        const range = new vscode.Range(m.line - 1, m.start - 1, m.endline - 1, m.end);
+      if (cleaned[m.path] === undefined) {
+        cleaned[m.path] = [];
+      }
+      desc += ' ' + m.descr;
+      if (i === 0) {
+        cords = m;
+      }
+      if (i === 2) {
+        targetResource = vscode.Uri.file(cords.path);
+        const range = new vscode.Range(cords.line - 1, cords.start - 1, cords.endline - 1, cords.end);
         const location = new vscode.Location(targetResource, range);
-        cleaned[m.path].push(new vscode.Diagnostic(range, m.descr, mapSeverity(e.level)));
+        cleaned[cords.path].push(new vscode.Diagnostic(range, desc.trim(), mapSeverity(e.level)));
+        desc = '';
+        i = 0;
+      } else {
+        if (m.line) {
+          targetResource = vscode.Uri.file(m.path);
+          const range = new vscode.Range(m.line - 1, m.start - 1, m.endline - 1, m.end);
+          const location = new vscode.Location(targetResource, range);
+          cleaned[m.path].push(new vscode.Diagnostic(range, '', mapSeverity(e.level)));
+        } else {
+          targetResource = vscode.Uri.file(m.path);
+          const range = new vscode.Range(m.line, m.start, m.endline, m.end);
+          const location = new vscode.Location(targetResource, range);
+          cleaned[m.path].push(new vscode.Diagnostic(range, '', mapSeverity(e.level)));
+        }
+        i++;
       }
     });
   });
