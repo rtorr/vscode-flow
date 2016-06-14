@@ -24,10 +24,6 @@ Follow the [instructions](https://code.visualstudio.com/docs/editor/extension-ga
 
 * You should set workspace preference to disable default syntax validation from Visual Studio Code: `"javascript.validate.enable": false`.
 
-## About
-
-This plugin is built on top of [Nuclide](https://github.com/facebook/nuclide)'s Flow support, the [nuclide-flow-base](https://github.com/facebook/nuclide/tree/master/pkg/nuclide/flow-base) npm package.
-
 ## Contributing
 
 * please refer to [CONTRIBUTING.md](CONTRIBUTING.md)
