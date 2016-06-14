@@ -65,13 +65,8 @@ function clean(diagnostics) {
     end: 0
   };
   let i = 0;
-  /**
-   * TODO:
-   * Currently we are getting duplicate errors listing here
-   * We need to concat some of the messages to make ONE message
-   * rather than have repeated errors
-   */
-  let diags = diagnostics.map(e => {
+
+  diagnostics.map(e => {
     return e.message.map(m => {
       if (cleaned[m.path] === undefined) {
         cleaned[m.path] = [];
@@ -88,17 +83,6 @@ function clean(diagnostics) {
         desc = '';
         i = 0;
       } else {
-        if (m.line) {
-          targetResource = vscode.Uri.file(m.path);
-          const range = new vscode.Range(m.line - 1, m.start - 1, m.endline - 1, m.end);
-          const location = new vscode.Location(targetResource, range);
-          cleaned[m.path].push(new vscode.Diagnostic(range, '', mapSeverity(e.level)));
-        } else {
-          targetResource = vscode.Uri.file(m.path);
-          const range = new vscode.Range(m.line, m.start, m.endline, m.end);
-          const location = new vscode.Location(targetResource, range);
-          cleaned[m.path].push(new vscode.Diagnostic(range, '', mapSeverity(e.level)));
-        }
         i++;
       }
     });
