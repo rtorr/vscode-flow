@@ -27,14 +27,6 @@ export function setup(disposables) {
   }));
 }
 
-const environment = process.env;
-const config = {
-  cwd: `${vscode.workspace.rootPath}`,
-  maxBuffer: 10000 * 1024,
-  env: environment
-};
-const flowPath = vscode.workspace.getConfiguration('flow').get('path');
-
 function updateDiagnostics(document): void {
   flowCommand([
     '--json'
