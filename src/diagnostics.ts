@@ -74,6 +74,12 @@ function mapSeverity(sev: string) {
 function clean(diagnostics) {
   let cleaned = {};
   let targetResource;
+  /**
+   * TODO:
+   * Currently we are getting duplicate errors listing here
+   * We need to concat some of the messages to make ONE message
+   * rather than have repeated errors
+   */
   let diags = diagnostics.map(e => {
     return e.message.map(m => {
       if (m.line) {
