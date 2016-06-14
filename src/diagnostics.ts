@@ -4,37 +4,39 @@ import { flowCommand } from './helpers';
 
 let lastDiagnostics: vscode.DiagnosticCollection = null;
 
-export function setup(disposables) {
+export function setup(disposables, flowPath) {
 
   // Do an initial call to get diagnostics from the active editor if any
   if (vscode.window.activeTextEditor) {
     console.log('INIT');
-    updateDiagnostics(vscode.window.activeTextEditor.document);
+    updateDiagnostics(vscode.window.activeTextEditor.document, flowPath);
   }
 
   // Update diagnostics: when active text editor changes
   disposables.push(vscode.window.onDidChangeActiveTextEditor(editor => {
     console.log('CHANGE');
-    updateDiagnostics(editor && editor.document);
+    updateDiagnostics(editor && editor.document, flowPath);
   }));
 
   // Update diagnostics when document is edited
   disposables.push(vscode.workspace.onDidSaveTextDocument(event => {
     console.log('UPDATE');
     if (vscode.window.activeTextEditor) {
-      updateDiagnostics(vscode.window.activeTextEditor.document);
+      updateDiagnostics(vscode.window.activeTextEditor.document, flowPath);
     }
   }));
 }
 
-function updateDiagnostics(document): void {
-  flowCommand([
+function updateDiagnostics(document, flowPath): void {
+  flowCommand(
+   flowPath,
+    [
     '--json'
-  ], function (output) {
-    if (output.errors) {
-      applyDiagnostics(output.errors);
-    }
-  });
+    ], function (output) {
+      if (output.errors) {
+        applyDiagnostics(output.errors);
+      }
+    });
 }
 
 function mapSeverity(sev: string) {

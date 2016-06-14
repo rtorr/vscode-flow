@@ -2,7 +2,7 @@
     "name": "vscode-flow",
     "displayName": "vscode-flow",
     "description": "flow support for vscode",
-    "version": "0.1.6",
+    "version": "270.1.7",
     "publisher": "rtorr",
     "engines": {
         "vscode": "^1.0.0"

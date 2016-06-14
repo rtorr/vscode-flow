@@ -7,9 +7,8 @@ const config = {
   maxBuffer: 10000 * 1024,
   env: environment
 };
-const flowPath = vscode.workspace.getConfiguration('flow').get('path');
 
-export function flowCommand(commandList:Array<string>, cb) {
+export function flowCommand(flowPath, commandList:Array<string>, cb) {
   let flowOutput = '';
   let flowOutputError = '';
   try {

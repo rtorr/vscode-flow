@@ -17,7 +17,17 @@ import { setup } from './diagnostics';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-    const flowPath = vscode.workspace.getConfiguration('flow').get('path');
+    let flowPath;
+    if (vscode.workspace.getConfiguration('flow').get('path')) {
+        flowPath = vscode.workspace.getConfiguration('flow').get('path');
+    }else if (process.platform === 'linux') {
+        flowPath = `${context.extensionPath}/flow/linux/flow/flow`;
+    }else if (process.platform === 'darwin') {
+        flowPath = `${context.extensionPath}/flow/osx/flow/flow`;
+    }else if (process.platform === 'win32') {
+        vscode.window.showErrorMessage('Flow does not support Windows, you can follow this Github issue https://github.com/facebook/flow/issues/6');
+        return undefined;
+    }
     if (vscode.workspace.getConfiguration('flow').get('disable')) {
         return undefined;
     }
@@ -26,10 +36,10 @@ export function activate(context: vscode.ExtensionContext) {
         return undefined;
     }
     config.configure();
-    context.subscriptions.push(vscode.languages.registerDefinitionProvider('javascript', new DeclarationSupport()));
+    context.subscriptions.push(vscode.languages.registerDefinitionProvider('javascript', new DeclarationSupport(flowPath)));
     // Diagnostics
-    setup(context.subscriptions);
+    setup(context.subscriptions, flowPath);
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }

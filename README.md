@@ -8,11 +8,19 @@ Follow the [instructions](https://code.visualstudio.com/docs/editor/extension-ga
 
 ## Setup
 
-* You _have_ to put `"flow.path": "/path/to/wher/you/put/flow"` in your `.vscode/settings.json` file
 * Flow is only supported on Mac and Linux, follow [flowtype.org](http://flowtype.org/docs/getting-started.html#_) to get started
 * You need a `.flowconfig` in your workspace to enable the flow features
 * Make sure you are able to run the `flow` command from the command line
 * Set workspace preference with `"javascript.validate.enable": false`.
+
+**Flow does not support Windows, you can follow this Github issue https://github.com/facebook/flow/issues/6**
+
+## Workspace settings
+
+flow comes bundled with this extention. if you would like to use 
+a different version of flow, use `"flow.path": "/path/to/wher/you/put/flow"` in your `.vscode/settings.json` file.
+
+You can disable the flow plugin using `"flow.disable": true` in your `.vscode/settings.json` file.
 
 ## Features
 

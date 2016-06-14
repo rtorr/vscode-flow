@@ -11,6 +11,12 @@ import { flowCommand } from './helpers';
 
 export class DeclarationSupport {
 
+  flowPath;
+
+  constructor(flowPath) {
+    this.flowPath = flowPath;
+  }
+
   provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
     const fileName = document.uri.fsPath;
     const currentContents = document.getText();
@@ -21,7 +27,9 @@ export class DeclarationSupport {
     if (wordAtPosition) {
       const line = wordAtPosition.start.line + 1; // fix offsets
       const col = wordAtPosition.start.character + 1; // fix offsets
-      flowCommand([
+      flowCommand(
+        this.flowPath,
+        [
         'get-def',
         '--strip-root',
         '--json',
