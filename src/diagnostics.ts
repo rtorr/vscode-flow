@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { spawn, execSync, exec } from 'child_process';
+import { spawn } from 'child_process';
 
 let lastDiagnostics: vscode.DiagnosticCollection = null;
 
@@ -8,16 +8,19 @@ export function setup(disposables) {
 
   // Do an initial call to get diagnostics from the active editor if any
   if (vscode.window.activeTextEditor) {
+    console.log('INIT');
     updateDiagnostics(vscode.window.activeTextEditor.document);
   }
 
   // Update diagnostics: when active text editor changes
   disposables.push(vscode.window.onDidChangeActiveTextEditor(editor => {
+    console.log('CHANGE');
     updateDiagnostics(editor && editor.document);
   }));
 
   // Update diagnostics when document is edited
   disposables.push(vscode.workspace.onDidSaveTextDocument(event => {
+    console.log('UPDATE');
     if (vscode.window.activeTextEditor) {
       updateDiagnostics(vscode.window.activeTextEditor.document);
     }
@@ -56,7 +59,7 @@ function updateDiagnostics(document): void {
       }
     })
   } catch (error) {
-    console.log(error);
+    vscode.window.showErrorMessage(error);
   }
 }
 
