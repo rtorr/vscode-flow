@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { spawn } from 'child_process';
+import { flowCommand } from './helpers';
 
 let lastDiagnostics: vscode.DiagnosticCollection = null;
 
@@ -36,31 +36,13 @@ const config = {
 const flowPath = vscode.workspace.getConfiguration('flow').get('path');
 
 function updateDiagnostics(document): void {
-  let flowOutput = '';
-  let flowOutputError = '';
-  try {
-    const flow = spawn(`${flowPath}`, ['--json'], config)
-    flow.stdout.on('data', function (data) {
-      flowOutput += data.toString();
-    })
-    flow.stderr.on('data', function (data) {
-      flowOutputError += data.toString();
-    })
-    flow.on('exit', function (code) {
-      let o = { errors: null };
-      if (flowOutput.length) {
-        o = JSON.parse(flowOutput);
-      }
-      if (flowOutputError.length) {
-        vscode.window.showInformationMessage(flowOutputError);
-      }
-      if (o.errors) {
-        applyDiagnostics(o.errors);
-      }
-    })
-  } catch (error) {
-    vscode.window.showErrorMessage(error);
-  }
+  flowCommand([
+    '--json'
+  ], function (output) {
+    if (output.errors) {
+      applyDiagnostics(output.errors);
+    }
+  });
 }
 
 function mapSeverity(sev: string) {

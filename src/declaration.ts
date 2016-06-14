@@ -7,7 +7,7 @@
  */
 
 import * as vscode from 'vscode';
-import { spawn } from 'child_process';
+import { flowCommand } from './helpers';
 
 export class DeclarationSupport {
 
@@ -21,42 +21,18 @@ export class DeclarationSupport {
     if (wordAtPosition) {
       const line = wordAtPosition.start.line + 1; // fix offsets
       const col = wordAtPosition.start.character + 1; // fix offsets
-      const environment = process.env;
-      const config = {
-        cwd: `${vscode.workspace.rootPath}`,
-        maxBuffer: 10000 * 1024,
-        env: environment
-      };
-      const flowPath = vscode.workspace.getConfiguration('flow').get('path');
-
-      try {
-        const flow = spawn(`${flowPath}`, [
-          'get-def',
-          '--strip-root',
-          '--json',
-          fileName,
-          `${line}`, `${col}`], config)
-        flow.stdout.on('data', function (data) {
-          flowOutput += data.toString();
-        })
-        flow.stderr.on('data', function (data) {
-          flowOutputError += data.toString();
-        })
-        flow.on('exit', function (code) {
-          let o;
-          if (flowOutput.length) {
-            o = JSON.parse(flowOutput);
-          }
-          if (flowOutputError.length) {
-            vscode.window.showInformationMessage(flowOutputError);
-          }
-          const range = new vscode.Range(o.line, o.start, o.line, o.end);
-          const uri = vscode.Uri.file(o.path);
+      flowCommand([
+        'get-def',
+        '--strip-root',
+        '--json',
+        fileName,
+        `${line}`, 
+        `${col}`
+        ], function (output) {
+          const range = new vscode.Range(output.line, output.start, output.line, output.end);
+          const uri = vscode.Uri.file(output.path);
           return new vscode.Location(uri, range);
-        })
-      } catch (error) {
-        vscode.window.showErrorMessage(error);
-      }
+        });
     }
 
     return null; // no definition
