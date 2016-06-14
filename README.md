@@ -1,5 +1,7 @@
 # Flow for Visual Studio Code
 
+![http://i.imgur.com/eyhtDcL.gif](http://i.imgur.com/eyhtDcL.gif)
+
 This extension adds [Flow](http://flowtype.org) support for VS Code. Flow is a static type checker, designed to find type errors in JavaScript programs.
 
 ## Installation
