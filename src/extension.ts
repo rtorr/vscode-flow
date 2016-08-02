@@ -25,8 +25,7 @@ export function activate(context: vscode.ExtensionContext) {
     }else if (process.platform === 'darwin') {
         flowPath = `${context.extensionPath}/flow/osx/flow/flow`;
     }else if (process.platform === 'win32') {
-        vscode.window.showErrorMessage('Flow does not support Windows, you can follow this Github issue https://github.com/facebook/flow/issues/6');
-        return undefined;
+        flowPath = `${context.extensionPath}/flow/win64/flow/flow`;
     }
     if (vscode.workspace.getConfiguration('flow').get('disable')) {
         return undefined;
