@@ -17,11 +17,12 @@ import { setup } from './diagnostics';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+
     let flowPath;
     if (vscode.workspace.getConfiguration('flow').get('path')) {
         flowPath = vscode.workspace.getConfiguration('flow').get('path');
     }
-    if (vscode.workspace.getConfiguration('flow').get('disable')) {
+    if (!vscode.workspace.getConfiguration('flow').get('enabled')) {
         return undefined;
     }
     if (!flowPath) {

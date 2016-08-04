@@ -4,15 +4,17 @@
 
 This extension adds [Flow](http://flowtype.org) support for VS Code. Flow is a static type checker, designed to find type errors in JavaScript programs.
 
+## Setup
+* add `"flow.enabled": true` to your project's `.vscode/settings.json` (defaults to false)
+* add `"flow.path": "path/to/flow"` to your project's `.vscode/settings.json`
+* You need a `.flowconfig` in your workspace to enable the flow features
+* Make sure you are able to run the `flow` command from the command line
+* Set workspace preference with `"javascript.validate.enable": false`.
+
 ## Installation
 
 Follow the [instructions](https://code.visualstudio.com/docs/editor/extension-gallery) for VS Code extension installation.
 
-## Setup
-* add `"flow": {"path": "path/to/flow"}` to your project's `.vscode/settings.json`
-* You need a `.flowconfig` in your workspace to enable the flow features
-* Make sure you are able to run the `flow` command from the command line
-* Set workspace preference with `"javascript.validate.enable": false`.
 
 **Flow does not support Windows, you can follow this Github issue https://github.com/facebook/flow/issues/6**
 
@@ -30,9 +32,6 @@ You can disable the flow plugin using `"flow.disable": true` in your `.vscode/se
 * Go to Definition / Peek Definition
 * Diagnostics (Errors, Warnings)
 
-## Disable
-
-You can disable `flow` per workspace by setting `"flow.disable": true` in your `.vscode/settings.json` file.
 
 ## Known Issues
 

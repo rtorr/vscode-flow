@@ -29,9 +29,9 @@ export function setup(disposables, flowPath) {
 
 function updateDiagnostics(document, flowPath): void {
   flowCommand(
-   flowPath,
+    flowPath,
     [
-    '--json'
+      '--json'
     ], function (output) {
       if (output.errors) {
         applyDiagnostics(output.errors);
@@ -58,34 +58,29 @@ function clean(diagnostics) {
     endline: 0,
     end: 0
   };
-  let i = 0;
 
   diagnostics.map(e => {
-    return e.message.map(m => {
-      if (cleaned[m.path] === undefined) {
-        cleaned[m.path] = [];
+    desc = '';    
+    return e.message.map((m) => {
+      const path = m.path;
+      if (cleaned[path] === undefined) {
+        cleaned[path] = [];
       }
-      desc += ' ' + m.descr;
-      if (i === 0) {
-        cords = m;
+      if (m.descr) {
+        desc += ` ${m.descr}`;
       }
-      if (i === 2) {
-        targetResource = vscode.Uri.file(cords.path);
-        const range = new vscode.Range(cords.line - 1, cords.start - 1, cords.endline - 1, cords.end);
-        const location = new vscode.Location(targetResource, range);
-        cleaned[cords.path].push(new vscode.Diagnostic(range, desc.trim(), mapSeverity(e.level)));
-        desc = '';
-        i = 0;
-      } else {
-        i++;
-      }
+      const range = new vscode.Range(m.line > 1 ? m.line - 1 : m.line, m.start > 1 ? m.start - 1 : m.start, m.endline > 1 ? m.endline - 1 : m.endline, m.end);
+      const location = new vscode.Location(targetResource, range);
+      cleaned[path].push(new vscode.Diagnostic(range, desc.trim(), mapSeverity(e.level)));
     });
   });
   return cleaned;
+
 }
 
 function applyDiagnostics(diagnostics) {
   const d = clean(diagnostics);
+  console.log('d---------', d)
   if (lastDiagnostics) {
     lastDiagnostics.dispose(); // clear old collection
   }
@@ -96,6 +91,5 @@ function applyDiagnostics(diagnostics) {
     lastDiagnostics.set(targetResource, errors);
   }
 }
-
 
 
