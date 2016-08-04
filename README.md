@@ -16,8 +16,6 @@ This extension adds [Flow](http://flowtype.org) support for VS Code. Flow is a s
 Follow the [instructions](https://code.visualstudio.com/docs/editor/extension-gallery) for VS Code extension installation.
 
 
-**Flow does not support Windows, you can follow this Github issue https://github.com/facebook/flow/issues/6**
-
 ## Workspace settings
 
 flow comes bundled with this extention. if you would like to use 

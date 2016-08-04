@@ -1,85 +1,85 @@
 {
-  "name": "vscode-flow",
-  "displayName": "vscode-flow",
-  "description": "flow support for vscode",
-  "version": "273.0.1",
-  "publisher": "rtorr",
-  "engines": {
-    "vscode": "^1.0.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [
-    "onLanguage:javascript"
-  ],
-  "icon": "flow-logo.png",
-  "main": "./out/src/extension",
-  "contributes": {
-    "configuration": {
-      "type": "object",
-      "title": "Flow configuration",
-      "properties": {
-        "flow.enabled": {
-          "type": "boolean",
-          "default": false,
-          "description": "Control whether or not flow is enabled"
-        },
-        "flow.path": {
-          "type": [
-            "string"
-          ],
-          "description": "A path to flow that is used for your project"
-        }
-      }
+    "name": "vscode-flow",
+    "displayName": "vscode-flow",
+    "description": "flow support for vscode",
+    "version": "274.1.0",
+    "publisher": "rtorr",
+    "engines": {
+        "vscode": "^1.0.0"
     },
-    "grammars": [
-      {
-        "language": "javascript",
-        "scopeName": "source.js.jsx",
-        "path": "./syntaxes/Babel Language.json"
-      },
-      {
-        "scopeName": "source.regexp.babel",
-        "path": "./syntaxes/Babel Regex.json"
-      }
+    "categories": [
+        "Other"
     ],
-    "snippets": [
-      {
-        "language": "javascript",
-        "path": "./snippets/flow.json"
-      }
+    "activationEvents": [
+        "onLanguage:javascript"
     ],
-    "debuggers": [
-      {
-        "type": "extensionHost",
-        "enableBreakpointsFor": {
-          "languageIds": [
-            "javascript"
-          ]
-        }
-      },
-      {
-        "type": "node",
-        "enableBreakpointsFor": {
-          "languageIds": [
-            "javascript"
-          ]
-        }
-      }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
-    "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install"
-  },
-  "devDependencies": {
-    "typescript": "^1.8.5",
-    "vsce": "^1.8.0",
-    "vscode": "^0.11.0"
-  },
-  "dependencies": {
-    "which": "^1.2.10"
-  }
+    "icon": "flow-logo.png",
+    "main": "./out/src/extension",
+    "contributes": {
+        "configuration": {
+            "type": "object",
+            "title": "Flow configuration",
+            "properties": {
+                "flow.enabled": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Control whether or not flow is enabled"
+                },
+                "flow.path": {
+                    "type": [
+                        "string"
+                    ],
+                    "description": "A path to flow that is used for your project"
+                }
+            }
+        },
+        "grammars": [
+            {
+                "language": "javascript",
+                "scopeName": "source.js.jsx",
+                "path": "./syntaxes/Babel Language.json"
+            },
+            {
+                "scopeName": "source.regexp.babel",
+                "path": "./syntaxes/Babel Regex.json"
+            }
+        ],
+        "snippets": [
+            {
+                "language": "javascript",
+                "path": "./snippets/flow.json"
+            }
+        ],
+        "debuggers": [
+            {
+                "type": "extensionHost",
+                "enableBreakpointsFor": {
+                    "languageIds": [
+                        "javascript"
+                    ]
+                }
+            },
+            {
+                "type": "node",
+                "enableBreakpointsFor": {
+                    "languageIds": [
+                        "javascript"
+                    ]
+                }
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
+        "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install"
+    },
+    "devDependencies": {
+        "typescript": "^1.8.5",
+        "vsce": "^1.8.0",
+        "vscode": "^0.11.0"
+    },
+    "dependencies": {
+        "which": "^1.2.10"
+    }
 }
