@@ -14,15 +14,12 @@ export function flowCommand(flowPath, commandList:Array<string>, cb) {
   try {
     const flow = spawn(`${flowPath}`, commandList, config)
     flow.stdout.on('data', function (data) {
-      console.log('stdout--------', data.toString())
       flowOutput += data.toString();
     })
     flow.stderr.on('data', function (data) {
-      console.log('stderr-------------', data.toString())
       flowOutputError += data.toString();
     })
     flow.on('exit', function (code) {
-      console.log('exit----------------------', flowOutput.length)
       let o = { errors: null };
       if (flowOutput.length) {
         o = JSON.parse(flowOutput);

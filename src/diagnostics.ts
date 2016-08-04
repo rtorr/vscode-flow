@@ -80,7 +80,6 @@ function clean(diagnostics) {
 
 function applyDiagnostics(diagnostics) {
   const d = clean(diagnostics);
-  console.log('d---------', d)
   if (lastDiagnostics) {
     lastDiagnostics.dispose(); // clear old collection
   }

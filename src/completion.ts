@@ -21,7 +21,6 @@ export class CompletionSupport {
   }
 
   provideCompletionItems(document, position, token) {
-    console.log('wat')
     let flowOutput = '';
     let flowOutputError = '';
     const fileName = document.uri.fsPath;
