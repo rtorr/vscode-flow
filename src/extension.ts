@@ -20,12 +20,6 @@ export function activate(context: vscode.ExtensionContext) {
     let flowPath;
     if (vscode.workspace.getConfiguration('flow').get('path')) {
         flowPath = vscode.workspace.getConfiguration('flow').get('path');
-    }else if (process.platform === 'linux') {
-        flowPath = `${context.extensionPath}/flow/linux/flow/flow`;
-    }else if (process.platform === 'darwin') {
-        flowPath = `${context.extensionPath}/flow/osx/flow/flow`;
-    }else if (process.platform === 'win32') {
-        flowPath = `${context.extensionPath}/flow/win64/flow/flow`;
     }
     if (vscode.workspace.getConfiguration('flow').get('disable')) {
         return undefined;
