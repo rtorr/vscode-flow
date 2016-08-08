@@ -2,7 +2,7 @@
     "name": "vscode-flow",
     "displayName": "vscode-flow",
     "description": "flow support for vscode",
-    "version": "274.1.1",
+    "version": "275.0.0",
     "publisher": "rtorr",
     "engines": {
         "vscode": "^1.0.0"
@@ -20,11 +20,6 @@
             "type": "object",
             "title": "Flow configuration",
             "properties": {
-                "flow.enabled": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Control whether or not flow is enabled"
-                },
                 "flow.path": {
                     "type": [
                         "string"
@@ -72,11 +67,12 @@
     "scripts": {
         "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
         "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install"
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "vsce": "vsce"
     },
     "devDependencies": {
         "typescript": "^1.8.5",
-        "vsce": "^1.8.0",
+        "vsce": "^1.8.1",
         "vscode": "^0.11.0"
     },
     "dependencies": {
