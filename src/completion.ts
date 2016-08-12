@@ -1,42 +1,53 @@
-/*
- Copyright (c) 2015-present, Facebook, Inc.
- All rights reserved.
- *
- * This source code is licensed under the license found in the LICENSE file in
- the root directory of this source tree.
- */
-
-/**
- * TODO MAKE THIS WORK!
- */
-
-
 import * as vscode from 'vscode';
 import { spawn } from 'child_process';
 
-export class CompletionSupport {
-  triggerCharacters: Array<string>;
-  constructor() {
-    this.triggerCharacters = ['.'];
+function typeToKind(flowEntry): number {
+    if (flowEntry.type === 'FUNCTION' || flowEntry.func_details || flowEntry.type.includes('=>')) {
+      return vscode.CompletionItemKind.Function;
+    }
+
+    if (flowEntry.type.indexOf('[class: ') >= 0) {
+      return vscode.CompletionItemKind.Class;
+    }
+
+    if (flowEntry.type.indexOf('[type: ') >= 0) {
+      return vscode.CompletionItemKind.Interface;
+    }
+
+    return vscode.CompletionItemKind.Variable;
   }
 
-  provideCompletionItems(document, position, token) {
+function spawnFlowAsPromised(command, params, config, input) {
+  let resolve, reject;
+  let output = '';
+  let errorOutput = '';
+  const promise = new Promise<string>((ok, fail) => { resolve = ok; reject = fail });
+  const spawnedCommand = spawn(command, params, config);
+  spawnedCommand.stdin.end(input);
+  spawnedCommand.stdout.on('data', function (data) {
+    output += data.toString();
+  });
+  spawnedCommand.stderr.on('data', function (data) {
+    errorOutput += data.toString();
+  });
+  spawnedCommand.on('exit', function (code) {
+    if (errorOutput.length) {
+      vscode.window.showInformationMessage(errorOutput);
+    }
+
+    resolve(output);
+  });
+  return promise;
+}
+
+export class CompletionSupport {
+  async provideCompletionItems(document, position, token) {
     let flowOutput = '';
     let flowOutputError = '';
     const fileName = document.uri.fsPath;
     const currentContents = document.getText();
-    const line = position.line;
-    const col = position.character;
-    const prefix = '.'; // TODO do better.
-    // const completions = await FlowService.flowGetAutocompleteSuggestions(
-    //   fileName,
-    //   currentContents,
-    //   line,
-    //   col,
-    //   prefix,
-    //   true
-    // );
-
+    const line = position.line + 1;
+    const col = position.character + 1;
     const environment = process.env;
     const config = {
       cwd: `${vscode.workspace.rootPath}`,
@@ -46,74 +57,36 @@ export class CompletionSupport {
     const flowPath = vscode.workspace.getConfiguration('flow').get('path');
 
     try {
-      const flow = spawn(`${flowPath}`, [
-        'autocomplete',
-        '--strip-root',
-        '--json',
-        '--no-auto-start',
-        fileName,
-        line, col], config)
-      flow.stdout.on('data', function (data) {
-        flowOutput += data.toString();
-      })
-      flow.stderr.on('data', function (data) {
-        flowOutputError += data.toString();
-      })
-      flow.on('exit', function (code) {
-        let o = { errors: null };
-        if (flowOutput.length) {
-          o = JSON.parse(flowOutput);
-        }
-        if (flowOutputError.length) {
-          vscode.window.showInformationMessage(flowOutputError);
-        }
-        console.log(o);
-        // if (o.errors) {
-        //   applyDiagnostics(o.errors);
-        // }
-      })
+      const output = await spawnFlowAsPromised(
+        flowPath,
+        [
+          'autocomplete',
+          '--strip-root',
+          '--json',
+          '--no-auto-start',
+          fileName,
+          line,
+          col
+        ],
+        config,
+        currentContents
+      );
+      if (output.length) {
+        const flowResponse = JSON.parse(output);
+        const results =  flowResponse.result.map(item => {
+            const completion = new vscode.CompletionItem(item.name);
+            completion.kind = typeToKind(item);
+            completion.detail = item.type;
+
+            // FIXME: undestand scoring system
+            completion.sortText = `\u0000${item.name}`;
+            return completion;
+        });
+        return results;
+      }
     } catch (error) {
       vscode.window.showErrorMessage(error);
     }
-
-    // if (completions) {
-    //   return completions.map(atomCompletion => {
-    //     const completion = new vscode.CompletionItem(atomCompletion.displayText);
-    //     if (atomCompletion.description) {
-    //       completion.detail = atomCompletion.description;
-    //     }
-    //     completion.kind = this.typeToKind(atomCompletion.type, atomCompletion.description);
-
-    //     if (completion.kind === vscode.CompletionItemKind.Function) {
-    //       completion.insertText = atomCompletion.snippet.replace(/\${\d+:/g, '{{').replace(/}/g, '}}') + '{{}}';
-    //     }
-
-    //     return completion;
-    //   });
-    // }
-
     return [];
-  }
-
-  typeToKind(type: string, description: string): number {
-    // Possible Kinds in VS Code:
-    // Method,
-    // Function,
-    // Constructor,
-    // Field,
-    // Variable,
-    // Class,
-    // Interface,
-    // Module,
-    // Property
-    if (type === 'function') {
-      return vscode.CompletionItemKind.Function;
-    }
-
-    if (description && description.indexOf('[class: ') >= 0) {
-      return vscode.CompletionItemKind.Class;
-    }
-
-    return vscode.CompletionItemKind.Variable;
   }
 }
