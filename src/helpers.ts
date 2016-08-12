@@ -29,6 +29,8 @@ export function flowCommand(flowPath, commandList:Array<string>, cb) {
       }
       return cb(o);
     })
+
+    return flow;
   } catch (error) {
     vscode.window.showErrorMessage(error);
   }
