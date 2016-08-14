@@ -12,6 +12,7 @@
 import * as vscode from 'vscode';
 import * as config from './config';
 import { DeclarationSupport } from './declaration';
+import { HoverSupport } from './hover';
 import { setup } from './diagnostics';
 
 // this method is called when your extension is activated
@@ -26,6 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
     config.configure();
     context.subscriptions.push(vscode.languages.registerDefinitionProvider('javascript', new DeclarationSupport(flowPath)));
+    context.subscriptions.push(vscode.languages.registerHoverProvider('javascript', new HoverSupport()));
     // Diagnostics
     setup(context.subscriptions, flowPath);
 }
