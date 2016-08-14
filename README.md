@@ -36,5 +36,5 @@ a different version of flow, use `"flow.path": "/path/to/wher/you/put/flow"` in 
 
 * please refer to [CONTRIBUTING.md](CONTRIBUTING.md)
 
-## License
+## License (MIT)
 [See here](LICENSE)

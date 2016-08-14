@@ -19,24 +19,38 @@ export function setup(disposables, flowPath) {
   }));
 
   // Update diagnostics when document is edited
+  disposables.push(vscode.workspace.onDidChangeTextDocument(event => {
+    console.log('UPDATE');
+    if (vscode.window.activeTextEditor) {
+      updateDiagnostics(vscode.window.activeTextEditor.document, flowPath);
+    }
+  }));
+
+  // Update diagnostics when document is saved
   disposables.push(vscode.workspace.onDidSaveTextDocument(event => {
     console.log('UPDATE');
     if (vscode.window.activeTextEditor) {
       updateDiagnostics(vscode.window.activeTextEditor.document, flowPath);
     }
   }));
+
 }
 
 function updateDiagnostics(document, flowPath): void {
-  flowCommand(
+  const flow = flowCommand(
     flowPath,
     [
-      '--json'
-    ], function (output) {
+      'check-contents',
+      '--json',
+      document.uri.fsPath,
+    ],
+    function (output) {
       if (output.errors) {
         applyDiagnostics(output.errors);
       }
-    });
+    }
+  );
+  flow.stdin.end(document.getText());
 }
 
 function mapSeverity(sev: string) {
