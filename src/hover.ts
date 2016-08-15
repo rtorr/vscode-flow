@@ -16,7 +16,6 @@ export class HoverSupport {
       const flowInstance = flowCommand(flowPath, [
         'type-at-pos',
         '--json',
-        '--no-auto-start',
         fileName,
         line.toString(),
         col.toString()

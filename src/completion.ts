@@ -35,7 +35,6 @@ export class CompletionSupport {
           'autocomplete',
           '--strip-root',
           '--json',
-          '--no-auto-start',
           fileName,
           line,
           col
