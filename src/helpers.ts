@@ -24,7 +24,7 @@ export function flowCommand(flowPath, commandList:Array<string>, cb) {
       if (flowOutput.length) {
         o = JSON.parse(flowOutput);
       }
-      if (flowOutputError.length) {
+      if (flowOutputError.length && (code === null || code)) {
         return vscode.window.showInformationMessage(flowOutputError);
       }
       return cb(o);

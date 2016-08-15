@@ -41,6 +41,7 @@ function updateDiagnostics(document, flowPath): void {
     flowPath,
     [
       'check-contents',
+      '--respect-pragma',
       '--json',
       document.uri.fsPath,
     ],
@@ -74,7 +75,7 @@ function clean(diagnostics) {
   };
 
   diagnostics.map(e => {
-    desc = '';    
+    desc = '';
     return e.message.map((m) => {
       const path = m.path;
       if (cleaned[path] === undefined) {
