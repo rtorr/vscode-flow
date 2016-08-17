@@ -9,7 +9,7 @@ export function setup(disposables, flowPath) {
   // Do an initial call to get diagnostics from the active editor if any
   if (vscode.window.activeTextEditor) {
     console.log('INIT');
-    updateDiagnostics(vscode.window.activeTextEditor.document, flowPath);
+    initDiagnostics(vscode.window.activeTextEditor.document, flowPath);
   }
 
   // Update diagnostics: when active text editor changes
@@ -20,7 +20,7 @@ export function setup(disposables, flowPath) {
 
   // Update diagnostics when document is edited
   disposables.push(vscode.workspace.onDidChangeTextDocument(event => {
-    console.log('UPDATE');
+    console.log('EDIT');
     if (vscode.window.activeTextEditor) {
       updateDiagnostics(vscode.window.activeTextEditor.document, flowPath);
     }
@@ -28,12 +28,25 @@ export function setup(disposables, flowPath) {
 
   // Update diagnostics when document is saved
   disposables.push(vscode.workspace.onDidSaveTextDocument(event => {
-    console.log('UPDATE');
+    console.log('SAVE');
     if (vscode.window.activeTextEditor) {
       updateDiagnostics(vscode.window.activeTextEditor.document, flowPath);
     }
   }));
 
+}
+
+function initDiagnostics(document, flowPath): void {
+  flowCommand(
+    flowPath,
+    [
+      'check',
+      '--json'
+    ], function (output) {
+      if (output.errors) {
+        applyDiagnostics(output.errors);
+      }
+    });
 }
 
 function updateDiagnostics(document, flowPath): void {
