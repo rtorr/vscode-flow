@@ -6,23 +6,25 @@ let lastDiagnostics: vscode.DiagnosticCollection = null;
 
 export function setup(disposables, flowPath) {
 
+  lastDiagnostics = vscode.languages.createDiagnosticCollection();
+
   // Do an initial call to get diagnostics from the active editor if any
   if (vscode.window.activeTextEditor) {
     console.log('INIT');
-    initDiagnostics(vscode.window.activeTextEditor.document, flowPath);
+    fullDiagnostics(flowPath);
   }
 
   // Update diagnostics: when active text editor changes
   disposables.push(vscode.window.onDidChangeActiveTextEditor(editor => {
     console.log('CHANGE');
-    updateDiagnostics(editor && editor.document, flowPath);
+    fileDiagnostics(editor && editor.document, flowPath);
   }));
 
   // Update diagnostics when document is edited
   disposables.push(vscode.workspace.onDidChangeTextDocument(event => {
     console.log('EDIT');
     if (vscode.window.activeTextEditor) {
-      updateDiagnostics(vscode.window.activeTextEditor.document, flowPath);
+      fileDiagnostics(vscode.window.activeTextEditor.document, flowPath);
     }
   }));
 
@@ -30,26 +32,27 @@ export function setup(disposables, flowPath) {
   disposables.push(vscode.workspace.onDidSaveTextDocument(event => {
     console.log('SAVE');
     if (vscode.window.activeTextEditor) {
-      updateDiagnostics(vscode.window.activeTextEditor.document, flowPath);
+      fullDiagnostics(flowPath);
     }
   }));
 
 }
 
-function initDiagnostics(document, flowPath): void {
+function fullDiagnostics(flowPath): void {
   flowCommand(
     flowPath,
     [
-      'check',
+      'status',
       '--json'
     ], function (output) {
       if (output.errors) {
-        applyDiagnostics(output.errors);
+        applyDiagnostics(output.errors, true);
+        fileDiagnostics(vscode.window.activeTextEditor.document, flowPath);
       }
     });
 }
 
-function updateDiagnostics(document, flowPath): void {
+function fileDiagnostics(document, flowPath): void {
   const flow = flowCommand(
     flowPath,
     [
@@ -60,7 +63,7 @@ function updateDiagnostics(document, flowPath): void {
     ],
     function (output) {
       if (output.errors) {
-        applyDiagnostics(output.errors);
+        applyDiagnostics(output.errors, false);
       }
     }
   );
@@ -106,14 +109,24 @@ function clean(diagnostics) {
 
 }
 
-function applyDiagnostics(diagnostics) {
+function applyDiagnostics(diagnostics, fullDiagnostic) {
   const d = clean(diagnostics);
-  if (lastDiagnostics) {
-    lastDiagnostics.dispose(); // clear old collection
+
+  if (fullDiagnostic) {
+    lastDiagnostics.clear(); // clear old collection
+    for (let file in d) {
+      if(file != '')
+      {
+        let errors = d[file];
+        var targetResource = vscode.Uri.file(file);
+        lastDiagnostics.set(targetResource, errors);
+      }
+    }
   }
-  lastDiagnostics = vscode.languages.createDiagnosticCollection();
-  for (let file in d) {
-    let errors = d[file];
+  else
+  {
+    const file = vscode.window.activeTextEditor.document.uri.fsPath;
+    const errors = d[file];
     var targetResource = vscode.Uri.file(file);
     lastDiagnostics.set(targetResource, errors);
   }
