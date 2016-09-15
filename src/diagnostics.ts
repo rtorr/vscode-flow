@@ -102,7 +102,9 @@ function clean(diagnostics) {
       }
       const range = new vscode.Range(m.line > 1 ? m.line - 1 : m.line, m.start > 1 ? m.start - 1 : m.start, m.endline > 1 ? m.endline - 1 : m.endline, m.end);
       const location = new vscode.Location(targetResource, range);
-      cleaned[path].push(new vscode.Diagnostic(range, desc.trim(), mapSeverity(e.level)));
+      let diagnostic = new vscode.Diagnostic(range, desc.trim(), mapSeverity(e.level))
+      diagnostic.source = 'flow';
+      cleaned[path].push(diagnostic);
     });
   });
   return cleaned;
