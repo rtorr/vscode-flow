@@ -1,4 +1,6 @@
-# Flow for Visual Studio Code
+# Deprecated, please use [https://github.com/flowtype/flow-for-vscode](https://github.com/flowtype/flow-for-vscode)
+
+## Flow for Visual Studio Code
 
 ![https://i.imgur.com/4rNERMs.png](https://i.imgur.com/4rNERMs.png)
 
